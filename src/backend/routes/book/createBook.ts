@@ -5,7 +5,7 @@ import { Book } from '../../models/book';
 const router = express.Router();
 
 router.post(
-    '/books', 
+    '/book', 
     [
         body('title')
             .trim()
