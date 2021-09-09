@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextComponent from '../components/TextComponent';
 import { TextInputMask } from 'react-native-masked-text';
-import API from '../services/SingUpService';
 
 import {
-  SafeAreaView,
-  TextInput,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  Image
+    Text,
+    Image,
+    TextInput,
+    Dimensions,
+    StyleSheet,
+    SafeAreaView,
+    TouchableOpacity,
+    PermissionsAndroid,
 } from 'react-native';
 
-import Logo2 from '../assets/image/Logo2.png'
+import * as ImagePicker from "react-native-image-picker";
 
-const SingUp = () => {
+import Logo2 from '../assets/image/Logo2.png';
+
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import API from '../services/SingUpService';
+
+const SingUp = (props: any) => {
     
     const [ name, setName ] = useState('');
     const [ phone, setPhone ] = useState('');
@@ -30,45 +36,124 @@ const SingUp = () => {
     const [ college, setCollege ] = useState('');
     const [ educationCenter, setEducationCenter ] = useState('');
     const [ course, setCourse ]  = useState('');
-    const [ profileThumbnail, setProfileThumbnail ] = useState('adasdasdasdasd');
+    const [ profileThumbnail, setProfileThumbnail ] = useState(null);
     
-    const [ changePage, setChangePage ] = useState(true);
+    const [ controlPrimary, setControlPrimary ] = useState(true);
+    const [ controlSecond, setControlSecond ] = useState(false);
+    const [ controlThird, setControlThird ] = useState(false);
 
-    const singUpUser = async () => {
+    useEffect(() => {
+        requestCameraPermission();
+    }, []);
 
-        let payload = {
-            name: name,
-            phone: phone,
-            address: address,
-            addressNumber: addressNumber,
-            CEP: CEP,
-            email: email,
-            password: email,
-            college: college,
-            educationCenter: educationCenter,
-            course: course,
-            profileThumbnail: profileThumbnail
+    const requestCameraPermission = async () => {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+            {
+              title: "Permissão para o uso da câmera",
+              message:"Este aplicativo necessita de acesso a câmera",
+              buttonNegative: "Cancelar",
+              buttonPositive: "Aceitar"
+            }
+          )
+        } catch (err) {
+          console.warn(err);
         }
-        
-        await API.post('/user', payload)
-        .then(function (response) {
-            console.log(response.data);
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .then(function () {
-            // always executed
-          });
     }
 
-    const nextBackForm = () => {
-        setChangePage(!changePage);
+    const launchCamera = () => {
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+        };
+        ImagePicker.launchCamera(options, (response: any) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+                // alert(response.customButton);
+            } else {
+                setProfileThumbnail(response.assets[0].uri);
+            }
+        });
+    }
+
+    const launchImageLibrary = () => {
+        let options = {
+          storageOptions: {
+            skipBackup: true,
+            path: 'images',
+          },
+        };
+        ImagePicker.launchImageLibrary(options, (response: any) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+                setProfileThumbnail(response.assets[0].uri);
+            }
+        });
+    }
+
+    const singUpUser = async () => {
+        // let payload = {
+        //     name: name,
+        //     phone: phone,
+        //     address: address,
+        //     addressNumber: addressNumber,
+        //     CEP: CEP,
+        //     email: email,
+        //     password: email,
+        //     college: college,
+        //     educationCenter: educationCenter,
+        //     course: course,
+        //     profileThumbnail: profileThumbnail
+        // }
+        // await API.post('/user', payload)
+        // .then(function (response) {
+        //     console.log(response.data);
+        //   })
+        //   .catch(function (error) {
+        //     // handle error
+        //     console.log(error);
+        //   })
+        //   .then(function () {
+        //     // always executed
+        //   });
+        props.navigation.navigate('Home');
+    }
+
+    const controlPrimaryPage = () => {
+        setControlPrimary(false);
+        setControlSecond(true);
+    }
+
+    const controlSecondPage = (control: string) => {
+        if(control === 'back') {
+            setControlPrimary(true);
+            setControlSecond(false);
+        } 
+        else if (control === 'next') {
+            setControlSecond(false);
+            setControlThird(true);
+        }
+    }
+
+    const controlThirdPage = () => {
+        setControlSecond(true);
+        setControlThird(false);
     }
 
     const pageOne = () => {
-        if(changePage) {
+        if(controlPrimary) {
             return(
                 <SafeAreaView style = { SingUpStyle.fitContent }>
                     <TextComponent text="Nome completo" size="16" />
@@ -135,47 +220,43 @@ const SingUp = () => {
                                 placeholder = "Ex.: BA"
                                 onChangeText = { setState }
                                 value = { state }
-
                             />
                         </SafeAreaView>
                     </SafeAreaView>
+                    <TouchableOpacity style = { SingUpStyle.button } onPress = { controlPrimaryPage }>
+                        <Text style = { SingUpStyle.textButton }>Avançar</Text>
+                    </TouchableOpacity>
                 </SafeAreaView>
             )
         }
     }
 
     const pageTwo = () => {
-        if(!changePage) {
+        if(controlSecond) {
             return(
                 <SafeAreaView style = { SingUpStyle.fitContent }>
-                    <TextComponent text="Instituição"/>
+                    <TextComponent text="Instituição de ensino" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Ex.: UFRB"
                         onChangeText = { setCollege }
                         value = { college }
                     />
-                    <TextComponent text="Centro de ensino"/>
+                    <TextComponent text="Centro de ensino" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Ex.: CETEC"
                         onChangeText = { setEducationCenter }
                         value = { educationCenter }
                     />
-                    <TextComponent text="Curso"/>
+                    <TextComponent text="Curso" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Ex.: Engenharia da Computação"
                         onChangeText = { setCourse }
                         value = { course }
                     />
-                    {/* <TextComponent text="Foto de perfil"/> */}
-                    {/* <TextInput
-                        style = { SingUpStyle.textInput }
-                        placeholder = "Ex.: Engenharia da Computação"
-                        onChangeText = { setPassword }
-                        value = { password }
-                    /> */}
+                    
                     <TextComponent text="E-mail" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
@@ -186,11 +267,62 @@ const SingUp = () => {
                     <TextComponent text="Senha" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
-                        placeholder = "Senha"
+                        placeholder = "Escolha uma senha"
                         onChangeText = { setPassword }
                         value = { password }
                         secureTextEntry = { true }
                     />
+                    <SafeAreaView style = { [SingUpStyle.row, SingUpStyle.justifyContent] }>
+                        <TouchableOpacity style = { SingUpStyle.button } onPress = { () => controlSecondPage('back') }>
+                            <Text style = { SingUpStyle.textButton }>Voltar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style = { SingUpStyle.button } onPress = { () => controlSecondPage('next') }>
+                            <Text style = { SingUpStyle.textButton }>Avançar</Text>
+                        </TouchableOpacity>
+                    </SafeAreaView>
+                </SafeAreaView>
+            )
+        }
+    }
+
+    const selectedThumb = () => {
+        if(profileThumbnail != null) {
+            return(   
+                <SafeAreaView style = { SingUpStyle.selectedThumbContainer }>
+                    <Image 
+                        source={ { uri: profileThumbnail } }
+                        style = { SingUpStyle.image }
+                    />
+                </SafeAreaView>
+            )   
+        }
+    }
+
+    const pageThird = () => {
+        if(controlThird) {
+            return(
+                <SafeAreaView style = { SingUpStyle.fitContent }>
+                    <TextComponent text="Foto de perfil" size="16" />
+                    <SafeAreaView style = { SingUpStyle.imageOptions }>
+                        { selectedThumb() }
+                        <SafeAreaView style = { SingUpStyle.captureOptions }>
+                            <TouchableOpacity onPress = { launchCamera }>
+                                <Icon name = "camera" size = { 70 } color = "#2838C9" />
+                            </TouchableOpacity>
+                            <SafeAreaView style = { SingUpStyle.line } />
+                            <TouchableOpacity onPress = { launchImageLibrary }>
+                                <Icon name = "image-size-select-actual" size = { 70 } color = "#2838C9" />
+                            </TouchableOpacity>
+                        </SafeAreaView>
+                    </SafeAreaView>
+                    <SafeAreaView style = { [SingUpStyle.row, SingUpStyle.justifyContent] }>
+                        <TouchableOpacity style = { SingUpStyle.button } onPress = { controlThirdPage }>
+                            <Text style = { SingUpStyle.textButton }>Voltar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style = { [SingUpStyle.button, SingUpStyle.registerButton] } onPress = { singUpUser }>
+                            <Text style = { SingUpStyle.textButton }>Inscrever-se</Text>
+                        </TouchableOpacity>
+                    </SafeAreaView>
                 </SafeAreaView>
             )
         }
@@ -214,9 +346,7 @@ const SingUp = () => {
             </SafeAreaView>
             { pageOne() }
             { pageTwo() }
-            <TouchableOpacity style = { SingUpStyle.button } onPress = { nextBackForm }>
-                <Text style = { SingUpStyle.textButton }>Avançar</Text>
-            </TouchableOpacity>
+            { pageThird() }
         </SafeAreaView>
     )
 }
@@ -240,8 +370,14 @@ const SingUpStyle = StyleSheet.create({
         flexDirection: 'column',
         marginRight: 15
     },
+    justifyContent: {
+        justifyContent: 'space-around',
+        width: '100%',
+    },
     fitContent: {
         width: width * 0.8,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     bigInput: {
         width: '70%',
@@ -261,13 +397,16 @@ const SingUpStyle = StyleSheet.create({
         fontFamily: 'OverlockSC-Regular'
     },
     button: {
-        width: width * .4,
+        width: width * .35,
         padding: 10,
         backgroundColor: '#2838C9',
         borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: height * .04,
+    },
+    registerButton: {
+        backgroundColor: '#FF5757',
     },
     textButton: {
         color: '#FFF',
@@ -294,5 +433,33 @@ const SingUpStyle = StyleSheet.create({
     color: {
         color: '#2838C9',
         fontFamily: 'Roboto-Italic',
+    },
+    imageOptions: {
+        borderStyle: 'dashed',
+        borderWidth: 1,
+        borderColor: '#ccc3c3',
+        borderRadius: 8,
+        minHeight: 150,
+        width: '100%',
+        marginVertical: 20,
+        flexDirection: 'column',
+        justifyContent: 'center'
+    },
+    captureOptions: {
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        flexDirection: 'row',
+        marginVertical: 20,
+    },
+    line: {
+        width: 3,
+        height: 50,
+        backgroundColor: '#2838C9',
+        borderRadius: 30,
+    },
+    selectedThumbContainer: {
+        minHeight: 200,
+        minWidth: 200,
+        marginTop: 20,
     }
 })

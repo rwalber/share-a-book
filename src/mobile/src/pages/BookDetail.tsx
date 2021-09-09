@@ -6,6 +6,7 @@ import {
     SafeAreaView,
     StyleSheet,
     Text,
+    TouchableOpacity
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -13,9 +14,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import TextComponent from '../components/TextComponent';
 
 const BookDetail = () => {
+
     return(
         <SafeAreaView>
-
+            
         </SafeAreaView>
     )
 }

@@ -17,10 +17,10 @@ const Home = (props: any) => {
             <ProfileComponent />
             <SafeAreaView style = { HomeStyle.content }>
                 <SafeAreaView>
-                    <TextComponent text = "Meus livros" size="20"/>
+                    <TextComponent text = "Meus livros" size="18"/>
                 </SafeAreaView>
                 <SafeAreaView>
-                    <TextComponent text = "+ Cadastrar livro" size="20" />
+                    <TextComponent text = "+ Cadastrar livro" size="18" />
                 </SafeAreaView>
             </SafeAreaView>
             <BookList navigation={props.navigation} />
