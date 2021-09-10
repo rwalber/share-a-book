@@ -14,7 +14,7 @@ import {
 const Home = (props: any) => {
     return(
         <SafeAreaView>
-            <ProfileComponent />
+            <ProfileComponent navigation={props.navigation} />
             <SafeAreaView style = { HomeStyle.content }>
                 <SafeAreaView>
                     <TextComponent text = "Meus livros" size="18"/>

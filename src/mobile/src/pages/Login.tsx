@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+
+import userContext from '../contexts/User';
+import { useValidation } from 'react-native-form-validator';
+
 import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  Image,
-  TextInput,
-  Dimensions,
-  TouchableOpacity,
+    Text,
+    Alert,
+    Image,
+    TextInput,
+    StyleSheet,
+    Dimensions,
+    SafeAreaView,
+    TouchableOpacity,
 } from 'react-native';
 
+import API from '../services/API';
 import Logo from '../assets/image/Logo.png';
 
 const Login = (props: any) => {
@@ -16,12 +22,44 @@ const Login = (props: any) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const SingUp = () => {
+    const { setState: setGloalState } = useContext(userContext);
+
+    const { validate, isFormValid } = useValidation({
+        state: { 
+            email, 
+            password
+        }
+    });
+
+    const SignUp = () => {
         props.navigation.navigate('SignUp');
     }
 
-    const SingIn = () => {
-        props.navigation.navigate('Home');
+    const SignIn = async () => {
+        validate({
+            email: { email: true, required: true },
+            password: { required: true }
+        });
+        if(isFormValid()) {
+            await API.post('/user/sign_in', {email: email, password: password})
+            .then(function (response: any) {
+                if(response.status === 201) {
+                    setGloalState(response.data)
+                    props.navigation.navigate('Home');
+                }
+            })
+            .catch(function (error) {
+                Alert.alert(
+                    "Algo deu errado",
+                    "Ouve um erro ao realizar o login, tente novamente",
+                    [
+                        {
+                            text: "Fechar"
+                        }
+                    ]
+                )
+            });
+        }
     }
 
     return(
@@ -58,10 +96,10 @@ const Login = (props: any) => {
                     secureTextEntry = { true }
                 />
             </SafeAreaView>
-            <TouchableOpacity style = { LoginStyle.button } onPress = { SingIn }>
+            <TouchableOpacity style = { LoginStyle.button } onPress = { SignIn }>
                 <Text style = { LoginStyle.textButton }>Entrar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style = { LoginStyle.registerButton } onPress = { SingUp }>
+            <TouchableOpacity style = { LoginStyle.registerButton } onPress = { SignUp }>
                 <Text style = { [LoginStyle.textButton, LoginStyle.textRegisterButton] }>Ainda não é inscrito? Registre-se!</Text>
             </TouchableOpacity>
         </SafeAreaView>

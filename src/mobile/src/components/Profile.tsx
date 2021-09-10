@@ -1,48 +1,82 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import userContext from '../contexts/User';
 
 import {
-    Dimensions,
-    Image,
-    SafeAreaView,
-    StyleSheet,
     Text,
+    Alert,
+    Image,
+    StyleSheet,
+    Dimensions,
+    SafeAreaView,
+    TouchableOpacity,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import TextComponent from './TextComponent';
 
 const ProfileComponent = (props: any) => {
-    
-    const thumb = "https://gamesricky.files.wordpress.com/2011/10/naruto.jpg"
-    
+
+    const context = useContext(userContext);
+
+    const { setState: setGloalState } = useContext(userContext);
+
+    const logOut = () => {
+        Alert.alert(
+            "Fazer logout",
+            "Tem certeza que deseja fazer o logout da aplicação?",
+            [
+                { text: "Cancelar" },
+                { text: "Sim", 
+                    onPress: () => {
+                        let state = {
+                            id: '',
+                            name: '',
+                            college: '',
+                            educationCenter: '',
+                            course: '',
+                            profileThumbnail: ''
+                        };
+                        setGloalState(state);
+                        props.navigation.navigate('Login');
+                    } 
+                }
+            ]
+        )
+    }
+
     return(
         <SafeAreaView style = { ProfileStyle.content }>
-            <SafeAreaView style = { ProfileStyle.row }>
-                <Image 
-                    key = ""
-                    source = { { uri: thumb } }
-                    style = { ProfileStyle.thumbnail }
-                />
-                <SafeAreaView style = { ProfileStyle.containerName }>
-                    <TextComponent text = "Fulano" size = "34" />
-                    <Text style = { ProfileStyle.course }>Eng. da Computação</Text>
-                    <Text style = { ProfileStyle.course }>CETEC</Text>
-                </SafeAreaView>
-            </SafeAreaView >
-            <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.newJustify] }>
-                <SafeAreaView>
-                    <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.cutMargin] }>
-                        <Icon name = "star" size = { 30 } color = "#ede857" />
-                        <Icon name = "star" size = { 30 } color = "#ede857" />
-                        <Icon name = "star" size = { 30 } color = "#999" />
+            {/* <TouchableOpacity  style = {{backgroundColor: 'tomato'}}>
+            </TouchableOpacity> */}
+            <Icon name = "logout" size = { 25 } color = "#999" style = { ProfileStyle.foo } onPress = { () => logOut() } />
+            <SafeAreaView style = { ProfileStyle.transform }>
+                <SafeAreaView style = { ProfileStyle.row }>
+                    <Image 
+                        key = ""
+                        source = { { uri: `data:image/gif;base64,${context.state.profileThumbnail}` } }
+                        style = { ProfileStyle.thumbnail }
+                    />
+                    <SafeAreaView style = { ProfileStyle.containerName }>
+                        <TextComponent text = { context.state.name } size = "34" />
+                        <Text style = { ProfileStyle.course }>{ context.state.course }</Text>
+                        <Text style = { ProfileStyle.course }>{ context.state.educationCenter }</Text>
                     </SafeAreaView>
-                    <Text style = { ProfileStyle.textStyle }>Bom leitor</Text>
-                </SafeAreaView>
-                <SafeAreaView style = { ProfileStyle.line } />
-                <SafeAreaView>
-                    <Text style = { [ProfileStyle.bar, ProfileStyle.textStyle] }>20</Text>
-                    <TextComponent text = "Compartilhados" size = "14" />
+                </SafeAreaView >
+                <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.newJustify] }>
+                    <SafeAreaView>
+                        <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.cutMargin] }>
+                            <Icon name = "star" size = { 30 } color = "#ede857" />
+                            <Icon name = "star" size = { 30 } color = "#ede857" />
+                            <Icon name = "star" size = { 30 } color = "#999" />
+                        </SafeAreaView>
+                        <Text style = { ProfileStyle.textStyle }>Bom leitor</Text>
+                    </SafeAreaView>
+                    <SafeAreaView style = { ProfileStyle.line } />
+                    <SafeAreaView>
+                        <Text style = { [ProfileStyle.bar, ProfileStyle.textStyle] }>20</Text>
+                        <TextComponent text = "Compartilhados" size = "14" />
+                    </SafeAreaView>
                 </SafeAreaView>
             </SafeAreaView>
         </SafeAreaView>
@@ -111,5 +145,12 @@ const ProfileStyle = StyleSheet.create({
     },
     bar: {
         fontSize: 36
+    },
+    foo: {
+        textAlign: 'right',
+        transform: [{translateX: -10}, {translateY: -5}],
+    },
+    transform: {
+        transform: [{translateY: -20}],
     }
 })

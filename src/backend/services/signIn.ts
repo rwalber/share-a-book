@@ -1,7 +1,9 @@
 import express, { Request, Response } from 'express';
+
 import { body } from 'express-validator';
 import { User } from '../models/users';
 import { Password } from './password';
+import { userAttributes, userDocument } from '../interfaces/user';
 
 const router = express.Router();
 
@@ -25,8 +27,15 @@ router.post(
         if (!passwordsMatch) {
             response.status(400).send("Credenciais inválidas");
         }
-
-        response.status(200).send(existingUser);
+        let sendDataUser = {
+            id: existingUser.id,
+            name: existingUser.name,
+            college: existingUser.college,
+            educationCenter: existingUser.educationCenter,
+            course: existingUser.course,
+            profileThumbnail: existingUser.profileThumbnail
+        }
+        response.status(201).send(sendDataUser);
     }
 )
 

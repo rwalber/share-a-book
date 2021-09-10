@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { BookAttributes } from './book';
 
 interface userAttributes {
+    id?: string,
     name: string,
     phone?: string,
     address: string,
@@ -19,6 +20,7 @@ interface userAttributes {
 }
 
 interface userDocument extends mongoose.Document {
+    id?: string,
     name: string,
     phone?: string,
     address: string,

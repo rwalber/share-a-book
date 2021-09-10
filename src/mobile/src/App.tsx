@@ -1,9 +1,12 @@
 import React from 'react';
 import Navigation from './components/Navigation';
+import GlobalContext from './contexts/Global';
 
 const App = () => {
   return (
-    <Navigation />
+    <GlobalContext>
+      <Navigation />
+    </GlobalContext>
   );
 };
 

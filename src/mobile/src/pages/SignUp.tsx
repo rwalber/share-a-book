@@ -391,7 +391,7 @@ const SignUp = (props: any) => {
             }
             await API.post('/user', payload)
             .then(function (response: any) {
-                if(response.status === '201') {
+                if(response.status === 201) {
                     setStatusRegister(true);
                 }
             })
