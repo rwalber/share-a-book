@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import TextComponent from '../components/TextComponent';
 import { TextInputMask } from 'react-native-masked-text';
+import { useValidation } from 'react-native-form-validator';
+import RNFS from 'react-native-fs';
 
 import {
     Text,
@@ -8,8 +10,10 @@ import {
     TextInput,
     Dimensions,
     StyleSheet,
+    ScrollView,
     SafeAreaView,
     TouchableOpacity,
+    ActivityIndicator,
     PermissionsAndroid,
 } from 'react-native';
 
@@ -37,10 +41,31 @@ const SingUp = (props: any) => {
     const [ educationCenter, setEducationCenter ] = useState('');
     const [ course, setCourse ]  = useState('');
     const [ profileThumbnail, setProfileThumbnail ] = useState(null);
+
+    const { validate, isFormValid } = useValidation({
+        state: { 
+            name, 
+            phone, 
+            address, 
+            addressNumber, 
+            CEP, 
+            city, 
+            state,
+            college,
+            educationCenter,
+            course,
+            email, 
+            password,
+            profileThumbnail 
+        }
+    });
     
     const [ controlPrimary, setControlPrimary ] = useState(true);
     const [ controlSecond, setControlSecond ] = useState(false);
     const [ controlThird, setControlThird ] = useState(false);
+    const [ pageSucess, setPageSucess ] = useState(false);
+
+    const [ statusRegister, setStatusRegister ] = useState(false);
 
     useEffect(() => {
         requestCameraPermission();
@@ -103,37 +128,33 @@ const SingUp = (props: any) => {
         });
     }
 
-    const singUpUser = async () => {
-        // let payload = {
-        //     name: name,
-        //     phone: phone,
-        //     address: address,
-        //     addressNumber: addressNumber,
-        //     CEP: CEP,
-        //     email: email,
-        //     password: email,
-        //     college: college,
-        //     educationCenter: educationCenter,
-        //     course: course,
-        //     profileThumbnail: profileThumbnail
-        // }
-        // await API.post('/user', payload)
-        // .then(function (response) {
-        //     console.log(response.data);
-        //   })
-        //   .catch(function (error) {
-        //     // handle error
-        //     console.log(error);
-        //   })
-        //   .then(function () {
-        //     // always executed
-        //   });
-        props.navigation.navigate('Home');
+    const selectedThumb = () => {
+        if(profileThumbnail != null) {
+            return(   
+                <SafeAreaView style = { SingUpStyle.selectedThumbContainer }>
+                    <Image 
+                        source={ { uri: profileThumbnail } }
+                        style = { SingUpStyle.image }
+                    />
+                </SafeAreaView>
+            )   
+        }
     }
 
     const controlPrimaryPage = () => {
-        setControlPrimary(false);
-        setControlSecond(true);
+        validate({
+            name: { minlength: 4, maxlength: 30, required: true },
+            phone: { required: true },
+            address: { required: true },
+            addressNumber: { required: true },
+            CEP: { required: true },
+            city: { required: true },
+            state: { required: true },
+        });
+        if(isFormValid()) {
+            setControlPrimary(false);
+            setControlSecond(true);
+        }
     }
 
     const controlSecondPage = (control: string) => {
@@ -142,8 +163,17 @@ const SingUp = (props: any) => {
             setControlSecond(false);
         } 
         else if (control === 'next') {
-            setControlSecond(false);
-            setControlThird(true);
+            validate({
+                college: { required: true },
+                educationCenter: { required: true },
+                course: { required: true },
+                email: { email: true, required: true },
+                password: { required: true },
+            });
+            if(isFormValid()) {
+                setControlSecond(false);
+                setControlThird(true);
+            }
         }
     }
 
@@ -156,14 +186,14 @@ const SingUp = (props: any) => {
         if(controlPrimary) {
             return(
                 <SafeAreaView style = { SingUpStyle.fitContent }>
-                    <TextComponent text="Nome completo" size="16" />
+                    <TextComponent text="Nome completo *" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Nome completo"
                         onChangeText = { setName }
                         value = { name }
                     />
-                    <TextComponent text="Telefone" size="16" />
+                    <TextComponent text="Telefone *" size="16" />
                     <TextInputMask
                         style = { SingUpStyle.textInput }
                         type = { 'cel-phone' }
@@ -178,7 +208,7 @@ const SingUp = (props: any) => {
                     />
                     <SafeAreaView style = { SingUpStyle.row }>
                         <SafeAreaView style = { SingUpStyle.bigInput }>
-                            <TextComponent text="Endereço" size="16" />
+                            <TextComponent text="Endereço *" size="16" />
                             <TextInput
                                 style = { SingUpStyle.textInput }
                                 placeholder = "Ex.: Rua da biblioteca"
@@ -187,7 +217,7 @@ const SingUp = (props: any) => {
                             />
                         </SafeAreaView>
                         <SafeAreaView style = { SingUpStyle.smallInput }>
-                            <TextComponent text="Número" size="16" />
+                            <TextComponent text="Número *" size="16" />
                             <TextInput
                                 style = { SingUpStyle.textInput }
                                 placeholder = "Ex.: 123"
@@ -196,7 +226,7 @@ const SingUp = (props: any) => {
                             />
                         </SafeAreaView>
                     </SafeAreaView>
-                    <TextComponent text="CEP" size="16" />
+                    <TextComponent text="CEP *" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Ex.: 44380-000"
@@ -205,7 +235,7 @@ const SingUp = (props: any) => {
                     />
                     <SafeAreaView style = { SingUpStyle.row }>
                         <SafeAreaView style = { SingUpStyle.bigInput }>
-                        <TextComponent text="Cidade" size="16" />
+                        <TextComponent text="Cidade *" size="16" />
                             <TextInput
                                 style = { SingUpStyle.textInput }
                                 placeholder = "Ex.: Cruz das Almas"
@@ -214,7 +244,7 @@ const SingUp = (props: any) => {
                             />
                         </SafeAreaView>
                         <SafeAreaView style = { SingUpStyle.smallInput }>
-                            <TextComponent text="Estado" size="16" />
+                            <TextComponent text="Estado *" size="16" />
                             <TextInput
                                 style = { SingUpStyle.textInput }
                                 placeholder = "Ex.: BA"
@@ -235,21 +265,21 @@ const SingUp = (props: any) => {
         if(controlSecond) {
             return(
                 <SafeAreaView style = { SingUpStyle.fitContent }>
-                    <TextComponent text="Instituição de ensino" size="16" />
+                    <TextComponent text="Instituição de ensino *" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Ex.: UFRB"
                         onChangeText = { setCollege }
                         value = { college }
                     />
-                    <TextComponent text="Centro de ensino" size="16" />
+                    <TextComponent text="Centro de ensino *" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Ex.: CETEC"
                         onChangeText = { setEducationCenter }
                         value = { educationCenter }
                     />
-                    <TextComponent text="Curso" size="16" />
+                    <TextComponent text="Curso *" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Ex.: Engenharia da Computação"
@@ -257,14 +287,14 @@ const SingUp = (props: any) => {
                         value = { course }
                     />
                     
-                    <TextComponent text="E-mail" size="16" />
+                    <TextComponent text="E-mail *" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Seu melhor e-mail"
                         onChangeText = { setEmail }
                         value = { email }
                     />
-                    <TextComponent text="Senha" size="16" />
+                    <TextComponent text="Senha *" size="16" />
                     <TextInput
                         style = { SingUpStyle.textInput }
                         placeholder = "Escolha uma senha"
@@ -285,24 +315,11 @@ const SingUp = (props: any) => {
         }
     }
 
-    const selectedThumb = () => {
-        if(profileThumbnail != null) {
-            return(   
-                <SafeAreaView style = { SingUpStyle.selectedThumbContainer }>
-                    <Image 
-                        source={ { uri: profileThumbnail } }
-                        style = { SingUpStyle.image }
-                    />
-                </SafeAreaView>
-            )   
-        }
-    }
-
     const pageThird = () => {
         if(controlThird) {
             return(
                 <SafeAreaView style = { SingUpStyle.fitContent }>
-                    <TextComponent text="Foto de perfil" size="16" />
+                    <TextComponent text="Foto de perfil *" size="16" />
                     <SafeAreaView style = { SingUpStyle.imageOptions }>
                         { selectedThumb() }
                         <SafeAreaView style = { SingUpStyle.captureOptions }>
@@ -327,6 +344,67 @@ const SingUp = (props: any) => {
             )
         }
     }
+    
+    const singUpUser = async () => {
+        validate({
+            profileThumbnail: { required: true }
+        });
+        if(isFormValid()) {
+            setPageSucess(true);
+            setControlThird(false);
+            var thumbnailBase64 = await RNFS.readFile(profileThumbnail, 'base64').then(res => { return res });
+            let payload = {
+                name: name,
+                phone: phone,
+                address: address,
+                addressNumber: addressNumber,
+                city: city,
+                state: state,
+                CEP: CEP,
+                email: email,
+                password: email,
+                college: college,
+                educationCenter: educationCenter,
+                course: course,
+                profileThumbnail: thumbnailBase64
+            }
+            await API.post('/user', payload)
+            .then(function (response: any) {
+                if(response.status === '201') {
+                    setStatusRegister(true);
+                }
+            })
+            .catch(function (error) {
+                setPageSucess(false);
+                setControlThird(true);
+            });
+        }
+    }
+
+    const logIn = () => {
+        props.navigation.navigate('Login');
+    }
+
+    const sucessPage = () => {
+        if(pageSucess && !statusRegister) {
+            return(
+                <SafeAreaView style = { [SingUpStyle.fitContent, SingUpStyle.load] }>
+                    <TextComponent text="Cadastro realizado com sucesso!" size="22" />
+                    <TouchableOpacity style = { [SingUpStyle.button, SingUpStyle.registerButton] } onPress = { logIn }>
+                        <Text style = { SingUpStyle.textButton }>Entrar</Text>
+                    </TouchableOpacity>
+                </SafeAreaView>
+            )
+        } else if (pageSucess && !statusRegister) {
+            return(
+                <SafeAreaView style = { SingUpStyle.fitContent }>
+                    <ActivityIndicator size="large" style = { SingUpStyle.load } />
+                    <TextComponent text="Estamos realizando seu cadastro." size="22" />
+                    <TextComponent text="Por favor, aguarde!" size="22" />
+                </SafeAreaView>
+            )
+        }
+    }
 
     return(
         <SafeAreaView style = { SingUpStyle.container } >
@@ -347,6 +425,7 @@ const SingUp = (props: any) => {
             { pageOne() }
             { pageTwo() }
             { pageThird() }
+            { sucessPage() }
         </SafeAreaView>
     )
 }
@@ -361,7 +440,7 @@ const SingUpStyle = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: '100%',
-        width: '100%'
+        width: '100%',
     },
     row: {
         flexDirection: 'row',
@@ -461,5 +540,9 @@ const SingUpStyle = StyleSheet.create({
         minHeight: 200,
         minWidth: 200,
         marginTop: 20,
+    },
+    load: {
+        marginTop: width * .2,
+        marginBottom: width * .05
     }
 })

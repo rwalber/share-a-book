@@ -27,21 +27,19 @@ router.post(
             .isLength({ min: 4, max: 20 }),
         body('college')
             .trim()
-            .isLength({ min: 4, max: 20 }),
+            .isLength({ min: 2, max: 20 }),
         body('educationCenter')
             .trim()
             .isLength({ min: 4, max: 20 }),
         body('course')
             .trim()
-            .isLength({ min: 4, max: 20 }),
-        body('profileThumbnail')
-            .trim()
+            .isLength({ min: 2, max: 20 })
     ],
     (request: Request, response: Response) => {
         const user = User.build(request.body);
         user.save();
 
-        response.status(201).send(user);
+        response.status(201).send({success: true});
     }
 )
 
