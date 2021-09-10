@@ -5,8 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import BookDetail from '../pages/BookDetail';
 import Home from '../pages/Home';
-import SingUp from '../pages/SingUp';
 import Login from '../pages/Login';
+import SignUp from '../pages/SignUp';
 
 const Navigation = () => {
     const Stack = createStackNavigator();
@@ -26,8 +26,8 @@ const Navigation = () => {
                     component={BookDetail}
                 />
                 <Stack.Screen
-                    name="SingUp"
-                    component={SingUp}
+                    name="SignUp"
+                    component={SignUp}
                 />
             </Stack.Navigator>
         </NavigationContainer>

@@ -25,7 +25,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import API from '../services/API';
 
-const SingUp = (props: any) => {
+const SignUp = (props: any) => {
     
     const [ name, setName ] = useState('');
     const [ phone, setPhone ] = useState('');
@@ -131,10 +131,10 @@ const SingUp = (props: any) => {
     const selectedThumb = () => {
         if(profileThumbnail != null) {
             return(   
-                <SafeAreaView style = { SingUpStyle.selectedThumbContainer }>
+                <SafeAreaView style = { SignUpStyle.selectedThumbContainer }>
                     <Image 
                         source={ { uri: profileThumbnail } }
-                        style = { SingUpStyle.image }
+                        style = { SignUpStyle.image }
                     />
                 </SafeAreaView>
             )   
@@ -185,17 +185,17 @@ const SingUp = (props: any) => {
     const pageOne = () => {
         if(controlPrimary) {
             return(
-                <SafeAreaView style = { SingUpStyle.fitContent }>
+                <SafeAreaView style = { SignUpStyle.fitContent }>
                     <TextComponent text="Nome completo *" size="16" />
                     <TextInput
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         placeholder = "Nome completo"
                         onChangeText = { setName }
                         value = { name }
                     />
                     <TextComponent text="Telefone *" size="16" />
                     <TextInputMask
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         type = { 'cel-phone' }
                         options={{
                             maskType: 'BRL',
@@ -206,20 +206,20 @@ const SingUp = (props: any) => {
                         value={ phone }
                         onChangeText={ setPhone }
                     />
-                    <SafeAreaView style = { SingUpStyle.row }>
-                        <SafeAreaView style = { SingUpStyle.bigInput }>
+                    <SafeAreaView style = { SignUpStyle.row }>
+                        <SafeAreaView style = { SignUpStyle.bigInput }>
                             <TextComponent text="Endereço *" size="16" />
                             <TextInput
-                                style = { SingUpStyle.textInput }
+                                style = { SignUpStyle.textInput }
                                 placeholder = "Ex.: Rua da biblioteca"
                                 onChangeText = { setAddress }
                                 value = { address }
                             />
                         </SafeAreaView>
-                        <SafeAreaView style = { SingUpStyle.smallInput }>
+                        <SafeAreaView style = { SignUpStyle.smallInput }>
                             <TextComponent text="Número *" size="16" />
                             <TextInput
-                                style = { SingUpStyle.textInput }
+                                style = { SignUpStyle.textInput }
                                 placeholder = "Ex.: 123"
                                 onChangeText = { setAddressNumber }
                                 value = { addressNumber }
@@ -228,33 +228,33 @@ const SingUp = (props: any) => {
                     </SafeAreaView>
                     <TextComponent text="CEP *" size="16" />
                     <TextInput
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         placeholder = "Ex.: 44380-000"
                         onChangeText = { setCEP }
                         value = { CEP }
                     />
-                    <SafeAreaView style = { SingUpStyle.row }>
-                        <SafeAreaView style = { SingUpStyle.bigInput }>
+                    <SafeAreaView style = { SignUpStyle.row }>
+                        <SafeAreaView style = { SignUpStyle.bigInput }>
                         <TextComponent text="Cidade *" size="16" />
                             <TextInput
-                                style = { SingUpStyle.textInput }
+                                style = { SignUpStyle.textInput }
                                 placeholder = "Ex.: Cruz das Almas"
                                 onChangeText = { setCity }
                                 value = { city }
                             />
                         </SafeAreaView>
-                        <SafeAreaView style = { SingUpStyle.smallInput }>
+                        <SafeAreaView style = { SignUpStyle.smallInput }>
                             <TextComponent text="Estado *" size="16" />
                             <TextInput
-                                style = { SingUpStyle.textInput }
+                                style = { SignUpStyle.textInput }
                                 placeholder = "Ex.: BA"
                                 onChangeText = { setState }
                                 value = { state }
                             />
                         </SafeAreaView>
                     </SafeAreaView>
-                    <TouchableOpacity style = { SingUpStyle.button } onPress = { controlPrimaryPage }>
-                        <Text style = { SingUpStyle.textButton }>Avançar</Text>
+                    <TouchableOpacity style = { SignUpStyle.button } onPress = { controlPrimaryPage }>
+                        <Text style = { SignUpStyle.textButton }>Avançar</Text>
                     </TouchableOpacity>
                 </SafeAreaView>
             )
@@ -264,24 +264,24 @@ const SingUp = (props: any) => {
     const pageTwo = () => {
         if(controlSecond) {
             return(
-                <SafeAreaView style = { SingUpStyle.fitContent }>
+                <SafeAreaView style = { SignUpStyle.fitContent }>
                     <TextComponent text="Instituição de ensino *" size="16" />
                     <TextInput
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         placeholder = "Ex.: UFRB"
                         onChangeText = { setCollege }
                         value = { college }
                     />
                     <TextComponent text="Centro de ensino *" size="16" />
                     <TextInput
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         placeholder = "Ex.: CETEC"
                         onChangeText = { setEducationCenter }
                         value = { educationCenter }
                     />
                     <TextComponent text="Curso *" size="16" />
                     <TextInput
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         placeholder = "Ex.: Engenharia da Computação"
                         onChangeText = { setCourse }
                         value = { course }
@@ -289,25 +289,25 @@ const SingUp = (props: any) => {
                     
                     <TextComponent text="E-mail *" size="16" />
                     <TextInput
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         placeholder = "Seu melhor e-mail"
                         onChangeText = { setEmail }
                         value = { email }
                     />
                     <TextComponent text="Senha *" size="16" />
                     <TextInput
-                        style = { SingUpStyle.textInput }
+                        style = { SignUpStyle.textInput }
                         placeholder = "Escolha uma senha"
                         onChangeText = { setPassword }
                         value = { password }
                         secureTextEntry = { true }
                     />
-                    <SafeAreaView style = { [SingUpStyle.row, SingUpStyle.justifyContent] }>
-                        <TouchableOpacity style = { SingUpStyle.button } onPress = { () => controlSecondPage('back') }>
-                            <Text style = { SingUpStyle.textButton }>Voltar</Text>
+                    <SafeAreaView style = { [SignUpStyle.row, SignUpStyle.justifyContent] }>
+                        <TouchableOpacity style = { SignUpStyle.button } onPress = { () => controlSecondPage('back') }>
+                            <Text style = { SignUpStyle.textButton }>Voltar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style = { SingUpStyle.button } onPress = { () => controlSecondPage('next') }>
-                            <Text style = { SingUpStyle.textButton }>Avançar</Text>
+                        <TouchableOpacity style = { SignUpStyle.button } onPress = { () => controlSecondPage('next') }>
+                            <Text style = { SignUpStyle.textButton }>Avançar</Text>
                         </TouchableOpacity>
                     </SafeAreaView>
                 </SafeAreaView>
@@ -318,26 +318,26 @@ const SingUp = (props: any) => {
     const pageThird = () => {
         if(controlThird) {
             return(
-                <SafeAreaView style = { SingUpStyle.fitContent }>
+                <SafeAreaView style = { SignUpStyle.fitContent }>
                     <TextComponent text="Foto de perfil *" size="16" />
-                    <SafeAreaView style = { SingUpStyle.imageOptions }>
+                    <SafeAreaView style = { SignUpStyle.imageOptions }>
                         { selectedThumb() }
-                        <SafeAreaView style = { SingUpStyle.captureOptions }>
+                        <SafeAreaView style = { SignUpStyle.captureOptions }>
                             <TouchableOpacity onPress = { launchCamera }>
                                 <Icon name = "camera" size = { 70 } color = "#2838C9" />
                             </TouchableOpacity>
-                            <SafeAreaView style = { SingUpStyle.line } />
+                            <SafeAreaView style = { SignUpStyle.line } />
                             <TouchableOpacity onPress = { launchImageLibrary }>
                                 <Icon name = "image-size-select-actual" size = { 70 } color = "#2838C9" />
                             </TouchableOpacity>
                         </SafeAreaView>
                     </SafeAreaView>
-                    <SafeAreaView style = { [SingUpStyle.row, SingUpStyle.justifyContent] }>
-                        <TouchableOpacity style = { SingUpStyle.button } onPress = { controlThirdPage }>
-                            <Text style = { SingUpStyle.textButton }>Voltar</Text>
+                    <SafeAreaView style = { [SignUpStyle.row, SignUpStyle.justifyContent] }>
+                        <TouchableOpacity style = { SignUpStyle.button } onPress = { controlThirdPage }>
+                            <Text style = { SignUpStyle.textButton }>Voltar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style = { [SingUpStyle.button, SingUpStyle.registerButton] } onPress = { singUpUser }>
-                            <Text style = { SingUpStyle.textButton }>Inscrever-se</Text>
+                        <TouchableOpacity style = { [SignUpStyle.button, SignUpStyle.registerButton] } onPress = { signUpUser }>
+                            <Text style = { SignUpStyle.textButton }>Inscrever-se</Text>
                         </TouchableOpacity>
                     </SafeAreaView>
                 </SafeAreaView>
@@ -348,17 +348,17 @@ const SingUp = (props: any) => {
     const sucessPage = () => {
         if(pageSucess && !statusRegister) {
             return(
-                <SafeAreaView style = { [SingUpStyle.fitContent, SingUpStyle.load] }>
+                <SafeAreaView style = { [SignUpStyle.fitContent, SignUpStyle.load] }>
                     <TextComponent text="Cadastro realizado com sucesso!" size="22" />
-                    <TouchableOpacity style = { [SingUpStyle.button, SingUpStyle.registerButton] } onPress = { logIn }>
-                        <Text style = { SingUpStyle.textButton }>Entrar</Text>
+                    <TouchableOpacity style = { [SignUpStyle.button, SignUpStyle.registerButton] } onPress = { signIn }>
+                        <Text style = { SignUpStyle.textButton }>Entrar</Text>
                     </TouchableOpacity>
                 </SafeAreaView>
             )
         } else if (pageSucess && !statusRegister) {
             return(
-                <SafeAreaView style = { SingUpStyle.fitContent }>
-                    <ActivityIndicator size="large" style = { SingUpStyle.load } />
+                <SafeAreaView style = { SignUpStyle.fitContent }>
+                    <ActivityIndicator size="large" style = { SignUpStyle.load } />
                     <TextComponent text="Estamos realizando seu cadastro." size="22" />
                     <TextComponent text="Por favor, aguarde!" size="22" />
                 </SafeAreaView>
@@ -366,7 +366,7 @@ const SingUp = (props: any) => {
         }
     }
 
-    const singUpUser = async () => {
+    const signUpUser = async () => {
         validate({
             profileThumbnail: { required: true }
         });
@@ -402,23 +402,23 @@ const SingUp = (props: any) => {
         }
     }
 
-    const logIn = () => {
+    const signIn = () => {
         props.navigation.navigate('Login');
     }
 
     return(
-        <SafeAreaView style = { SingUpStyle.container } >
-            <SafeAreaView style = { SingUpStyle.row }>
-                <SafeAreaView style = { SingUpStyle.column }>
-                    <Text style = { SingUpStyle.foo }>Cadastra-se e</Text>
-                    <Text style = { [SingUpStyle.foo, SingUpStyle.color] }>compartilhe</Text>
-                    <Text style = { SingUpStyle.foo }>conhecimento e</Text>
-                    <Text style = { [SingUpStyle.foo, SingUpStyle.color] }>imaginação</Text>
+        <SafeAreaView style = { SignUpStyle.container } >
+            <SafeAreaView style = { SignUpStyle.row }>
+                <SafeAreaView style = { SignUpStyle.column }>
+                    <Text style = { SignUpStyle.foo }>Cadastra-se e</Text>
+                    <Text style = { [SignUpStyle.foo, SignUpStyle.color] }>compartilhe</Text>
+                    <Text style = { SignUpStyle.foo }>conhecimento e</Text>
+                    <Text style = { [SignUpStyle.foo, SignUpStyle.color] }>imaginação</Text>
                 </SafeAreaView>
-                <SafeAreaView style = { SingUpStyle.imageContainer }>
+                <SafeAreaView style = { SignUpStyle.imageContainer }>
                     <Image 
                         source = { Logo2 }
-                        style = { SingUpStyle.image }
+                        style = { SignUpStyle.image }
                     />
                 </SafeAreaView>
             </SafeAreaView>
@@ -430,12 +430,12 @@ const SingUp = (props: any) => {
     )
 }
 
-export default SingUp;
+export default SignUp;
 
 let height = Dimensions.get('window').height;
 let width = Dimensions.get('window').width;
 
-const SingUpStyle = StyleSheet.create({
+const SignUpStyle = StyleSheet.create({
     container: {
         justifyContent: 'center',
         alignItems: 'center',

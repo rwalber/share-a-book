@@ -17,7 +17,7 @@ const Login = (props: any) => {
     const [password, setPassword] = useState('');
 
     const SingUp = () => {
-        props.navigation.navigate('SingUp');
+        props.navigation.navigate('SignUp');
     }
 
     const SingIn = () => {

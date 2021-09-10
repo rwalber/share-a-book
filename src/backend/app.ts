@@ -15,6 +15,7 @@ import { updateUser } from './routes/users/updateUser';
 import { deleteUser } from './routes/users/deteleUser';
 import { getUserById } from './routes/users/getUserById';
 import { getUserList } from './routes/users/getUserList';
+import { signIn } from './services/signIn';
 
 const app = express();
 
@@ -37,7 +38,8 @@ app.use(
     deleteUser,
     updateUser,
     getUserById,
-    getUserList
+    getUserList,
+    signIn
 )
 
 export { app }
