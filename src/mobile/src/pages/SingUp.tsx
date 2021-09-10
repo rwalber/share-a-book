@@ -23,7 +23,7 @@ import Logo2 from '../assets/image/Logo2.png';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import API from '../services/SingUpService';
+import API from '../services/API';
 
 const SingUp = (props: any) => {
     
@@ -344,46 +344,6 @@ const SingUp = (props: any) => {
             )
         }
     }
-    
-    const singUpUser = async () => {
-        validate({
-            profileThumbnail: { required: true }
-        });
-        if(isFormValid()) {
-            setPageSucess(true);
-            setControlThird(false);
-            var thumbnailBase64 = await RNFS.readFile(profileThumbnail, 'base64').then(res => { return res });
-            let payload = {
-                name: name,
-                phone: phone,
-                address: address,
-                addressNumber: addressNumber,
-                city: city,
-                state: state,
-                CEP: CEP,
-                email: email,
-                password: email,
-                college: college,
-                educationCenter: educationCenter,
-                course: course,
-                profileThumbnail: thumbnailBase64
-            }
-            await API.post('/user', payload)
-            .then(function (response: any) {
-                if(response.status === '201') {
-                    setStatusRegister(true);
-                }
-            })
-            .catch(function (error) {
-                setPageSucess(false);
-                setControlThird(true);
-            });
-        }
-    }
-
-    const logIn = () => {
-        props.navigation.navigate('Login');
-    }
 
     const sucessPage = () => {
         if(pageSucess && !statusRegister) {
@@ -404,6 +364,46 @@ const SingUp = (props: any) => {
                 </SafeAreaView>
             )
         }
+    }
+
+    const singUpUser = async () => {
+        validate({
+            profileThumbnail: { required: true }
+        });
+        if(isFormValid()) {
+            setPageSucess(true);
+            setControlThird(false);
+            var thumbnailBase64 = await RNFS.readFile(profileThumbnail, 'base64').then(res => { return res });
+            let payload = {
+                name: name,
+                phone: phone,
+                address: address,
+                addressNumber: addressNumber,
+                city: city,
+                state: state,
+                CEP: CEP,
+                email: email,
+                password: password,
+                college: college,
+                educationCenter: educationCenter,
+                course: course,
+                profileThumbnail: thumbnailBase64
+            }
+            await API.post('/user', payload)
+            .then(function (response: any) {
+                if(response.status === '201') {
+                    setStatusRegister(true);
+                }
+            })
+            .catch(function (error) {
+                setPageSucess(false);
+                setControlThird(true);
+            });
+        }
+    }
+
+    const logIn = () => {
+        props.navigation.navigate('Login');
     }
 
     return(

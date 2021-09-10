@@ -38,7 +38,6 @@ router.post(
     (request: Request, response: Response) => {
         const user = User.build(request.body);
         user.save();
-
         response.status(201).send({success: true});
     }
 )
