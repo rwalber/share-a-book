@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TextComponent from '../components/TextComponent';
-import { TextInputMask } from 'react-native-masked-text';
-import API from '../services/API';
-
 import ProfileComponent from '../components/Profile';
 import BookList from '../components/BookList';
 

@@ -54,6 +54,10 @@ const BookDetail = (props: any) => {
         })
     }
 
+    const reserve = () => {
+        props.navigation.navigate('LendPage');
+    }
+
     return(
         <SafeAreaView style = { DetailStyle.content }>
             <SafeAreaView style = { DetailStyle.contentImages }>
@@ -102,7 +106,7 @@ const BookDetail = (props: any) => {
                     </SafeAreaView>
                     <SafeAreaView style = { [DetailStyle.column, DetailStyle.margin] }>
                         <SafeAreaView style = { DetailStyle.row }>
-                            <Icon name = "comment-quote-outline" size = { 30 } color = "#2838C9"  />
+                            <Icon name = "comment-processing-outline" size = { 30 } color = "#2838C9"  />
                             <Text style = { DetailStyle.title }>Descrição: </Text>    
                         </SafeAreaView>
                         <Text style = { [DetailStyle.title, DetailStyle.marginTop] }>{detail.description}</Text>
@@ -110,7 +114,11 @@ const BookDetail = (props: any) => {
                 </ScrollView>
             </SafeAreaView>
             <SafeAreaView style = { DetailStyle.footer }>
-                <TouchableOpacity style = { DetailStyle.buttonReserve }>
+                <TouchableOpacity 
+                    style = { [DetailStyle.buttonReserve, buttonDisabled(detail.status).foo] } 
+                    disabled = { detail.status !== 'true' }
+                    onPress ={ reserve }
+                >
                     <Text style = { DetailStyle.textButton }>Reservar</Text>
                 </TouchableOpacity>
             </SafeAreaView>
@@ -122,6 +130,12 @@ export default BookDetail;
 
 let height = Dimensions.get('window').height;
 let width = Dimensions.get('window').width;
+
+const buttonDisabled = (props: any) => StyleSheet.create({
+    foo: {
+        backgroundColor: props === 'true' ? '#FF5757' : '#999',
+    }
+})
 
 const DetailStyle = StyleSheet.create({
     content: {
