@@ -4,8 +4,8 @@ import ProfileComponent from '../components/Profile';
 import BookList from '../components/BookList';
 
 import {
-  SafeAreaView,
-  StyleSheet,
+    SafeAreaView,
+    StyleSheet,
 } from 'react-native';
 
 const Home = (props: any) => {

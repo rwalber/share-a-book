@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import API from '../services/API';
 import {
     Alert,
@@ -9,6 +9,7 @@ import {
     SafeAreaView,
     TouchableOpacity,
     ActivityIndicator,
+    BackHandler,
 } from 'react-native';
 
 const BookList = (props: any) => {
@@ -20,9 +21,16 @@ const BookList = (props: any) => {
         props.navigation.navigate("BookDetail", {id: id});
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         getBooksList();
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
     }, []);
+
+    function handleBackButtonClick() {
+        getBooksList();
+        props.navigation.goBack(null);
+        return true;
+    }
 
     const getBooksList = async () => {
         await API.get('/books')
@@ -52,12 +60,16 @@ const BookList = (props: any) => {
                         {
                             books.map((book: any) => {
                                 return(
-                                    <TouchableOpacity onPress = { () => BookDetail(book.id) } >
+                                    <TouchableOpacity onPress = { () => BookDetail(book.id) } key = { book.id } >
                                         <Image 
                                             source = { { uri: `data:image/gif;base64,${book.thumbnail}` } }
                                             style = { BookListStyle.bookThumb }
-                                            key = { book.id }
                                         />
+                                        {book.status === 'false' ? 
+                                            <SafeAreaView style = { BookListStyle.unavailable } /> 
+                                            :
+                                            <></>
+                                        }
                                     </TouchableOpacity>
                                 )
                             })
@@ -105,5 +117,13 @@ const BookListStyle = StyleSheet.create({
     load: {
         marginTop: width * .2,
         marginBottom: width * .05
+    },
+    unavailable: {
+        height: width * .4,
+        width: width * .3,
+        margin: 5,
+        position: 'absolute',
+        backgroundColor: '#999',
+        opacity: 0.6
     }
 })

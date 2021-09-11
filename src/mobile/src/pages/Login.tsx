@@ -171,6 +171,7 @@ const LoginStyle = StyleSheet.create({
         padding: 10,
         fontFamily: 'OverlockSC-Regular',
         backgroundColor: '#FFF',
+        color: '#000'
     },
     button: {
         width: width * .4,

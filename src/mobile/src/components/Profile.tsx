@@ -61,7 +61,7 @@ const ProfileComponent = (props: any) => {
                         <Text style = { ProfileStyle.course }>{ context.state.educationCenter }</Text>
                     </SafeAreaView>
                 </SafeAreaView >
-                <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.newJustify] }>
+                {/* <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.newJustify] }>
                     <SafeAreaView>
                         <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.cutMargin] }>
                             <Icon name = "star" size = { 30 } color = "#ede857" />
@@ -75,7 +75,7 @@ const ProfileComponent = (props: any) => {
                         <Text style = { [ProfileStyle.bar, ProfileStyle.textStyle] }>20</Text>
                         <TextComponent text = "Compartilhados" size = "14" />
                     </SafeAreaView>
-                </SafeAreaView>
+                </SafeAreaView> */}
             </SafeAreaView>
         </SafeAreaView>
     )
@@ -90,7 +90,7 @@ const ProfileStyle = StyleSheet.create({
     content: {
         fontFamily: 'OverlockSC-Regular',
         backgroundColor: '#FFF',
-        height: height * 0.3,
+        height: height * 0.2,
         borderBottomLeftRadius: 50,
         borderBottomRightRadius: 50,
         shadowColor: "#000",

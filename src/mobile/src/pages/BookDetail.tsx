@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState, useLayoutEffect } from 'react';
+import userContext from '../contexts/User';
+
 import API from '../services/API';
 
 import {
@@ -18,6 +20,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const BookDetail = (props: any) => {
 
+    const context = useContext(userContext);
+
     const [ detail, setDetail ] = useState({
         title: '',
         subtitle: '',
@@ -25,26 +29,25 @@ const BookDetail = (props: any) => {
         year: '',
         description: '',
         thumbnail: '',
-        status: ''
+        status: '',
+        id: ''
     });
-    const [ load, setLoad ] = useState(false);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         bookDetail(props.route.params.id);
-    }, [])
+    }, []);
 
     const bookDetail = async (id: string) => {
         await API.get(`/book/${id}`)
         .then(function (response: any) {
             if(response.status === 201) {
                 setDetail(response.data);
-                setLoad(true);
             }
         })
         .catch(function (error) {
             Alert.alert(
                 "Algo deu errado",
-                "Ouve um erro ao buscar os livros, tente novamente",
+                "Ouve um erro ao buscar os livros, tente novamente.",
                 [
                     {
                         text: "Fechar"
@@ -55,7 +58,75 @@ const BookDetail = (props: any) => {
     }
 
     const reserve = () => {
-        props.navigation.navigate('LendPage');
+        Alert.alert(
+            "Quase lá",
+            "Deseja confirmar que está pegando esse livro emprestado?",
+            [
+                {
+                    text: "Não"
+                },
+                {
+                    text: "Sim",
+                    onPress: () => confirmReserve()
+                }
+            ]
+        )
+    }
+
+    const confirmReserve = async () => {
+        await API.put(`/book/lend/${context.state.id}/${detail.id}`)
+        .then(function (response: any) {
+            if(response.status === 201) {
+                bookDetail(detail.id);
+            }
+        })
+        .catch(function (error) {
+            Alert.alert(
+                "Algo deu errado",
+                "Ouve um erro ao confirmar o empréstimo do livro, tente novamente.",
+                [
+                    {
+                        text: "Fechar"
+                    }
+                ]
+            )
+        })
+    }
+
+    const giveBack = () => {
+        Alert.alert(
+            "Que ótimo",
+            "Deseja confirmar que está devolvendo este livro?",
+            [
+                {
+                    text: "Não"
+                },
+                {
+                    text: "Sim",
+                    onPress: () => confirmeGiveBack()
+                }
+            ]
+        )
+    }
+
+    const confirmeGiveBack = async () => {
+        await API.put(`/book/back/${context.state.id}/${detail.id}`)
+        .then(function (response: any) {
+            if(response.status === 201) {
+                bookDetail(detail.id);
+            }
+        })
+        .catch(function (error) {
+            Alert.alert(
+                "Algo deu errado",
+                "Ouve um erro ao confirmar a devolução do livro, tente novamente.",
+                [
+                    {
+                        text: "Fechar"
+                    }
+                ]
+            )
+        })
     }
 
     return(
@@ -114,13 +185,25 @@ const BookDetail = (props: any) => {
                 </ScrollView>
             </SafeAreaView>
             <SafeAreaView style = { DetailStyle.footer }>
-                <TouchableOpacity 
-                    style = { [DetailStyle.buttonReserve, buttonDisabled(detail.status).foo] } 
-                    disabled = { detail.status !== 'true' }
-                    onPress ={ reserve }
-                >
-                    <Text style = { DetailStyle.textButton }>Reservar</Text>
-                </TouchableOpacity>
+                {
+                    detail.status === 'true' ? 
+                    <TouchableOpacity 
+                        style = { [DetailStyle.buttonReserve, buttonDisabled(detail.status).foo] } 
+                        disabled = { detail.status !== 'true' }
+                        onPress ={ reserve }
+                    >
+                        <Text style = { DetailStyle.textButton }>Pegar Emprestado</Text>
+                    </TouchableOpacity> : <></>
+                }
+                {
+                    detail.status === 'false' ? 
+                    <TouchableOpacity 
+                        style = { [DetailStyle.buttonReserve, buttonGiveBack.background] } 
+                        onPress ={ giveBack }
+                    >
+                        <Text style = { DetailStyle.textButton }>Estou Devolvendo</Text>
+                    </TouchableOpacity> : <></>
+                }
             </SafeAreaView>
         </SafeAreaView>
     )
@@ -134,6 +217,12 @@ let width = Dimensions.get('window').width;
 const buttonDisabled = (props: any) => StyleSheet.create({
     foo: {
         backgroundColor: props === 'true' ? '#FF5757' : '#999',
+    }
+})
+
+const buttonGiveBack = StyleSheet.create({
+    background: {
+        backgroundColor: '#2838C9',
     }
 })
 
@@ -209,6 +298,7 @@ const DetailStyle = StyleSheet.create({
         marginVertical: 35,
     },
     footer: {
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -216,5 +306,5 @@ const DetailStyle = StyleSheet.create({
         color: '#FFF',
         fontFamily: 'OverlockSC-Regular',
         fontSize: 18
-    }
+    },
 });
