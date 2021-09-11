@@ -47,8 +47,6 @@ const ProfileComponent = (props: any) => {
 
     return(
         <SafeAreaView style = { ProfileStyle.content }>
-            {/* <TouchableOpacity  style = {{backgroundColor: 'tomato'}}>
-            </TouchableOpacity> */}
             <Icon name = "logout" size = { 25 } color = "#999" style = { ProfileStyle.foo } onPress = { () => logOut() } />
             <SafeAreaView style = { ProfileStyle.transform }>
                 <SafeAreaView style = { ProfileStyle.row }>

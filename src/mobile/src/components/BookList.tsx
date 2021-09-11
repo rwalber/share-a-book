@@ -1,86 +1,78 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
+import API from '../services/API';
 import {
-    Dimensions,
+    Alert,
     Image,
-    SafeAreaView,
+    Dimensions,
     StyleSheet,
-    Text,
     ScrollView,
-    TouchableOpacity
+    SafeAreaView,
+    TouchableOpacity,
+    ActivityIndicator,
 } from 'react-native';
-
-import TextComponent from './TextComponent';
 
 const BookList = (props: any) => {
 
+    const [ books, setBooks ] = useState([]);
+    const [ load, setLoad ] = useState(false);
 
-    const BookDetail = () => {
-        props.navigation.navigate("BookDetail");
+    const BookDetail = (id: string) => {
+        props.navigation.navigate("BookDetail", {id: id});
+    };
+
+    useEffect(() => {
+        getBooksList();
+    }, []);
+
+    const getBooksList = async () => {
+        await API.get('/books')
+        .then(function (response: any) {
+            if(response.status === 201) {
+                setBooks(response.data);
+                setLoad(true);
+            }
+        })
+        .catch(function (error) {
+            Alert.alert(
+                "Algo deu errado",
+                "Ouve um erro ao buscar os livros, tente novamente",
+                [
+                    {
+                        text: "Fechar"
+                    }
+                ]
+            )
+        });
     }
 
+    const bookList = () => {
+        if(load) {
+            return(
+                    <ScrollView contentContainerStyle = { BookListStyle.foo } >
+                        {
+                            books.map((book: any) => {
+                                return(
+                                    <TouchableOpacity onPress = { () => BookDetail(book.id) } >
+                                        <Image 
+                                            source = { { uri: `data:image/gif;base64,${book.thumbnail}` } }
+                                            style = { BookListStyle.bookThumb }
+                                            key = { book.id }
+                                        />
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    </ScrollView>
+            )
+        } else {
+            return(
+                <ActivityIndicator size="large" style = { BookListStyle.load } />
+            )
+        }
+    }
     return(
         <SafeAreaView style = { BookListStyle.row }>
-            <ScrollView contentContainerStyle = { BookListStyle.foo } >
-                <TouchableOpacity onPress = { BookDetail } >
-                    <Image 
-                        source = { { uri: "https://m.media-amazon.com/images/I/41SH-SvWPxL.jpg" } }
-                        style = { BookListStyle.bookThumb }
-                    />
-                </TouchableOpacity>
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/steve-jobs-walter-isaacson-books-about-computers-678x1024.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/the-soul-of-a-new-machine-tracy-kidder-books-about-computers.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/hackers-steven-levy-books-about-computers.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/the-facebook-effect-david-kirkpatrick-books-about-computer-662x1024.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/how-google-works-eric-schmidt-books-about-computer-692x1024.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/dreaming-in-code-scott-rosenberg-books-about-computer.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://m.media-amazon.com/images/I/41SH-SvWPxL.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/steve-jobs-walter-isaacson-books-about-computers-678x1024.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/the-soul-of-a-new-machine-tracy-kidder-books-about-computers.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/hackers-steven-levy-books-about-computers.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/the-facebook-effect-david-kirkpatrick-books-about-computer-662x1024.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/how-google-works-eric-schmidt-books-about-computer-692x1024.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-                <Image 
-                    source = { { uri: "https://web.archive.org/web/20191029162626im_/https://www.aboutgreatbooks.com/wp-content/uploads/2016/04/dreaming-in-code-scott-rosenberg-books-about-computer.jpg" } }
-                    style = { BookListStyle.bookThumb }
-                />
-            </ScrollView>
+            { bookList() }
         </SafeAreaView>
     )
 }
@@ -109,5 +101,9 @@ const BookListStyle = StyleSheet.create({
         alignItems: 'center',
         flexDirection : "row", 
         flexWrap : "wrap",
+    },
+    load: {
+        marginTop: width * .2,
+        marginBottom: width * .05
     }
 })

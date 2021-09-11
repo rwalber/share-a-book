@@ -162,9 +162,6 @@ const LoginStyle = StyleSheet.create({
         justifyContent: 'center',
         paddingLeft: width * .25
     },
-    formContainer: {
-
-    },
     textInput: {
         borderWidth: 0.8,
         borderColor: '#ccc3c3',
