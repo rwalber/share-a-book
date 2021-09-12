@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useState } from 'react';
-import API from '../services/API';
+import {API} from '../services/API';
 import {
     Alert,
     Image,

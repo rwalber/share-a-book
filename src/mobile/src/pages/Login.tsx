@@ -14,7 +14,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import API from '../services/API';
+import {API} from '../services/API';
 import Logo from '../assets/image/Logo.png';
 
 const Login = (props: any) => {
@@ -85,12 +85,14 @@ const Login = (props: any) => {
                 <TextInput
                     style = { LoginStyle.textInput }
                     placeholder = "E-mail"
+                    placeholderTextColor="#CCC3C3"
                     onChangeText = { setEmail }
                     value = { email }
                 />
                 <TextInput
                     style = { LoginStyle.textInput }
                     placeholder = "Senha"
+                    placeholderTextColor="#CCC3C3"
                     onChangeText = { setPassword }
                     value = { password }
                     secureTextEntry = { true }
@@ -169,8 +171,8 @@ const LoginStyle = StyleSheet.create({
         width: width * .8,
         marginVertical: 15,
         padding: 10,
-        fontFamily: 'OverlockSC-Regular',
         backgroundColor: '#FFF',
+        fontFamily: 'Roboto-Regular',
         color: '#000'
     },
     button: {

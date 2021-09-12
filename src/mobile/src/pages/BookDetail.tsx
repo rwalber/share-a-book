@@ -1,7 +1,7 @@
 import React, { useContext, useState, useLayoutEffect } from 'react';
 import userContext from '../contexts/User';
 
-import API from '../services/API';
+import {API} from '../services/API';
 
 import {
     Text,
