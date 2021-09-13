@@ -21,62 +21,20 @@ const ProfileComponent = (props: any) => {
 
     const { setState: setGloalState } = useContext(userContext);
 
-    const logOut = () => {
-        Alert.alert(
-            "Fazer logout",
-            "Tem certeza que deseja fazer o logout da aplicação?",
-            [
-                { text: "Cancelar" },
-                { text: "Sim", 
-                    onPress: () => {
-                        let state = {
-                            id: '',
-                            name: '',
-                            college: '',
-                            educationCenter: '',
-                            course: '',
-                            profileThumbnail: ''
-                        };
-                        setGloalState(state);
-                        props.navigation.navigate('Login');
-                    } 
-                }
-            ]
-        )
-    }
-
     return(
         <SafeAreaView style = { ProfileStyle.content }>
-            <Icon name = "logout" size = { 25 } color = "#999" style = { ProfileStyle.foo } onPress = { () => logOut() } />
-            <SafeAreaView style = { ProfileStyle.transform }>
-                <SafeAreaView style = { ProfileStyle.row }>
-                    <Image 
-                        key = ""
-                        source = { { uri: `data:image/gif;base64,${context.state.profileThumbnail}` } }
-                        style = { ProfileStyle.thumbnail }
-                    />
-                    <SafeAreaView style = { ProfileStyle.containerName }>
-                        <TextComponent text = { context.state.name } size = "34" />
-                        <Text style = { ProfileStyle.course }>{ context.state.course }</Text>
-                        <Text style = { ProfileStyle.course }>{ context.state.educationCenter }</Text>
-                    </SafeAreaView>
-                </SafeAreaView >
-                {/* <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.newJustify] }>
-                    <SafeAreaView>
-                        <SafeAreaView style = { [ProfileStyle.row, ProfileStyle.cutMargin] }>
-                            <Icon name = "star" size = { 30 } color = "#ede857" />
-                            <Icon name = "star" size = { 30 } color = "#ede857" />
-                            <Icon name = "star" size = { 30 } color = "#999" />
-                        </SafeAreaView>
-                        <Text style = { ProfileStyle.textStyle }>Bom leitor</Text>
-                    </SafeAreaView>
-                    <SafeAreaView style = { ProfileStyle.line } />
-                    <SafeAreaView>
-                        <Text style = { [ProfileStyle.bar, ProfileStyle.textStyle] }>20</Text>
-                        <TextComponent text = "Compartilhados" size = "14" />
-                    </SafeAreaView>
-                </SafeAreaView> */}
-            </SafeAreaView>
+            <SafeAreaView style = { ProfileStyle.row }>
+                <Image 
+                    key = ""
+                    source = { { uri: `data:image/gif;base64,${context.state.profileThumbnail}` } }
+                    style = { ProfileStyle.thumbnail }
+                />
+                <SafeAreaView style = { ProfileStyle.containerName }>
+                    <TextComponent text = { context.state.name } size = "34" />
+                    <Text style = { ProfileStyle.course }>{ context.state.course }</Text>
+                    <Text style = { ProfileStyle.course }>{ context.state.educationCenter }</Text>
+                </SafeAreaView>
+            </SafeAreaView >
         </SafeAreaView>
     )
 }
@@ -90,7 +48,7 @@ const ProfileStyle = StyleSheet.create({
     content: {
         fontFamily: 'OverlockSC-Regular',
         backgroundColor: '#FFF',
-        height: height * 0.2,
+        height: height * 0.22,
         borderBottomLeftRadius: 50,
         borderBottomRightRadius: 50,
         shadowColor: "#000",
@@ -147,8 +105,5 @@ const ProfileStyle = StyleSheet.create({
     foo: {
         textAlign: 'right',
         transform: [{translateX: -10}, {translateY: -5}],
-    },
-    transform: {
-        transform: [{translateY: -20}],
     }
 })

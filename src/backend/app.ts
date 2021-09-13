@@ -18,6 +18,7 @@ import { getUserList } from './routes/users/getUserList';
 import { signIn } from './services/signIn';
 import { lendBook } from './routes/book/lendBook';
 import { giveBackBook } from './routes/book/giveBackBooks';
+import { getUserLendBooks } from './routes/users/getUserLendBooks';
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use(
     signIn,
     lendBook,
     giveBackBook,
+    getUserLendBooks,
 )
 
 export { app }

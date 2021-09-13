@@ -1,43 +1,30 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { API } from '../services/API';
+import React, { useState, useEffect, useContext } from 'react'
+import { API } from '../services/API'
 
-import {
-    Alert,
-    Image,
-    Dimensions,
-    StyleSheet,
-    ScrollView,
+import {  
     SafeAreaView,
+    StyleSheet,
+    Alert,
+    ScrollView,
     TouchableOpacity,
     ActivityIndicator,
-    BackHandler,
-} from 'react-native';
+    Dimensions,
+    Image
+} from 'react-native'
 
-const BookList = (props: any) => {
+import userContext from '../contexts/User';
 
-    const [ books, setBooks ] = useState([]);
+const MyBookLends = (props: any) => {
+
+    const context = useContext(userContext);
+    const [ bookLends, setBookLends ] = useState([]);
     const [ load, setLoad ] = useState(false);
 
-    const BookDetail = (id: string) => {
-        props.navigation.navigate("BookDetail", {id: id});
-    };
-
-    useLayoutEffect(() => {
-        getBooksList();
-        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
-    }, []);
-
-    function handleBackButtonClick() {
-        getBooksList();
-        props.navigation.goBack(null);
-        return true;
-    }
-
-    const getBooksList = async () => {
-        await API.get('/books')
+    useEffect(() => {
+        API.get(`user/${context.state.id}/lendBooks`)
         .then(function (response: any) {
             if(response.status === 201) {
-                setBooks(response.data);
+                setBookLends(response.data);
                 setLoad(true);
             }
         })
@@ -52,14 +39,18 @@ const BookList = (props: any) => {
                 ]
             )
         });
-    }
+    }, []);
+
+    const BookDetail = (id: string) => {
+        props.navigation.navigate("BookDetail", {id: id});
+    };
 
     const bookList = () => {
         if(load) {
             return(
                     <ScrollView contentContainerStyle = { BookListStyle.foo } >
                         {
-                            books.map((book: any) => {
+                            bookLends.map((book: any) => {
                                 return(
                                     <TouchableOpacity onPress = { () => BookDetail(book.id) } key = { book.id } >
                                         <Image 
@@ -90,7 +81,7 @@ const BookList = (props: any) => {
     )
 }
 
-export default BookList;
+export default MyBookLends;
 
 let height = Dimensions.get('window').height;
 let width = Dimensions.get('window').width;

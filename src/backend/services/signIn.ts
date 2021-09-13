@@ -33,7 +33,8 @@ router.post(
             college: existingUser.college,
             educationCenter: existingUser.educationCenter,
             course: existingUser.course,
-            profileThumbnail: existingUser.profileThumbnail
+            profileThumbnail: existingUser.profileThumbnail,
+            borrowedBooks: existingUser.borrowedBooks
         }
         response.status(201).send(sendDataUser);
     }
