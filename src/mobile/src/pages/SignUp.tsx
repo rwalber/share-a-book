@@ -433,21 +433,13 @@ const SignUp = (props: any) => {
     }
 
     const sucessPage = () => {
-        if(pageSucess && !statusRegister) {
+        if(pageSucess) {
             return(
                 <SafeAreaView style = { [SignUpStyle.fitContent, SignUpStyle.load] }>
                     <TextComponent text="Cadastro realizado com sucesso!" size="22" />
                     <TouchableOpacity style = { [SignUpStyle.button, SignUpStyle.registerButton] } onPress = { signIn }>
                         <Text style = { SignUpStyle.textButton }>Entrar</Text>
                     </TouchableOpacity>
-                </SafeAreaView>
-            )
-        } else if (pageSucess && !statusRegister) {
-            return(
-                <SafeAreaView style = { SignUpStyle.fitContent }>
-                    <ActivityIndicator size="large" style = { SignUpStyle.load } />
-                    <TextComponent text="Estamos realizando seu cadastro." size="22" />
-                    <TextComponent text="Por favor, aguarde!" size="22" />
                 </SafeAreaView>
             )
         }

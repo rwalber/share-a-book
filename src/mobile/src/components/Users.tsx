@@ -9,6 +9,7 @@ import {
     ScrollView,
     SafeAreaView,
     Text,
+    View,
 } from 'react-native'
 import TextComponent from './TextComponent';
 
@@ -45,25 +46,30 @@ const Users = (props: any) => {
     const allUsers = () => {
         if(load) {
             return(
-                <ScrollView contentContainerStyle = { UsersStyle.column  }>
-                {
-                    users.map((user: any) => {
-                        return(
-                            <SafeAreaView style = { UsersStyle.row } key = { user.id }>
-                                <Image 
-                                    source = { { uri: `data:image/gif;base64,${user.profileThumbnail}` } }
-                                    style = { UsersStyle.thumbnail }
-                                />
-                                <SafeAreaView style = { UsersStyle.containerName }>
-                                    <TextComponent text = { user.name } size = "28" />
-                                    <Text style = { UsersStyle.course }>{ user.course }</Text>
-                                    <Text style = { UsersStyle.course }>{ user.educationCenter }</Text>
+                <SafeAreaView>
+                    <View style = { UsersStyle.titleMargin }>
+                        <TextComponent text="Usuários" size="18" />
+                    </View>
+                    <ScrollView contentContainerStyle = { UsersStyle.column  }>
+                    {
+                        users.map((user: any) => {
+                            return(
+                                <SafeAreaView style = { UsersStyle.row } key = { user.id }>
+                                    <Image 
+                                        source = { { uri: `data:image/gif;base64,${user.profileThumbnail}` } }
+                                        style = { UsersStyle.thumbnail }
+                                    />
+                                    <SafeAreaView style = { UsersStyle.containerName }>
+                                        <TextComponent text = { user.name } size = "28" />
+                                        <Text style = { UsersStyle.course }>{ user.course }</Text>
+                                        <Text style = { UsersStyle.course }>{ user.educationCenter }</Text>
+                                    </SafeAreaView>
                                 </SafeAreaView>
-                            </SafeAreaView>
-                        )
-                    })
-                }
-                </ScrollView>
+                            )
+                        })
+                    }
+                    </ScrollView>
+                </SafeAreaView>
             )
         }
     }
@@ -110,4 +116,8 @@ const UsersStyle = StyleSheet.create({
         fontFamily: 'Roboto-Regular',
         color: '#2838C9'
     },
+    titleMargin: {
+        // marginHorizontal: 10,
+        // marginTop: 10
+    }
 })

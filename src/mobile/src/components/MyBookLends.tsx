@@ -9,10 +9,12 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Dimensions,
-    Image
+    Image,
+    View
 } from 'react-native'
 
 import userContext from '../contexts/User';
+import TextComponent from './TextComponent';
 
 const MyBookLends = (props: any) => {
 
@@ -48,6 +50,10 @@ const MyBookLends = (props: any) => {
     const bookList = () => {
         if(load) {
             return(
+                <SafeAreaView>
+                    <View style = { BookListStyle.titleMargin }>
+                        <TextComponent text="Meus livros" size="18" />
+                    </View>
                     <ScrollView contentContainerStyle = { BookListStyle.foo } >
                         {
                             bookLends.map((book: any) => {
@@ -67,6 +73,7 @@ const MyBookLends = (props: any) => {
                             })
                         }
                     </ScrollView>
+                </SafeAreaView>
             )
         } else {
             return(
@@ -93,7 +100,7 @@ const BookListStyle = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: height * .6,
-        marginTop: 45
+        marginTop: 40
     },
     bookThumb: {
         height: width * .4,
@@ -117,5 +124,9 @@ const BookListStyle = StyleSheet.create({
         position: 'absolute',
         backgroundColor: '#999',
         opacity: 0.6
+    },
+    titleMargin: {
+        marginHorizontal: 10,
+        marginVertical: 10
     }
 })

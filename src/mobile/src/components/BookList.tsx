@@ -2,16 +2,18 @@ import React, { useLayoutEffect, useState } from 'react';
 import { API } from '../services/API';
 
 import {
+    View,
     Alert,
     Image,
     Dimensions,
     StyleSheet,
     ScrollView,
+    BackHandler,
     SafeAreaView,
     TouchableOpacity,
     ActivityIndicator,
-    BackHandler,
 } from 'react-native';
+import TextComponent from './TextComponent';
 
 const BookList = (props: any) => {
 
@@ -57,6 +59,10 @@ const BookList = (props: any) => {
     const bookList = () => {
         if(load) {
             return(
+                <SafeAreaView>
+                    <View style = { BookListStyle.titleMargin }>
+                        <TextComponent text="Livros disponíveis" size="18" />
+                    </View>
                     <ScrollView contentContainerStyle = { BookListStyle.foo } >
                         {
                             books.map((book: any) => {
@@ -76,6 +82,7 @@ const BookList = (props: any) => {
                             })
                         }
                     </ScrollView>
+                </SafeAreaView>
             )
         } else {
             return(
@@ -102,7 +109,7 @@ const BookListStyle = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: height * .6,
-        marginTop: 45
+        marginTop: 40
     },
     bookThumb: {
         height: width * .4,
@@ -126,5 +133,9 @@ const BookListStyle = StyleSheet.create({
         position: 'absolute',
         backgroundColor: '#999',
         opacity: 0.6
+    },
+    titleMargin: {
+        marginHorizontal: 10,
+        marginVertical: 10,
     }
 })

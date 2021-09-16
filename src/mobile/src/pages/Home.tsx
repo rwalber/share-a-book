@@ -98,12 +98,15 @@ const Home = (props: any) => {
                 <TouchableOpacity onPress = { pageAllBooks } style = { HomeStyle.foo } >
                     <Icon name = "book-multiple" size = { 25 } color = "#FFF" />
                 </TouchableOpacity>
+                <SafeAreaView style = { HomeStyle.foobar }/>
                 <TouchableOpacity onPress = { pageMyLends } style = { HomeStyle.foo } >
                     <Icon name = "book-account" size = { 25 } color = "#FFF" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress = { pageAllUsers } style = { HomeStyle.foo } >
+                <SafeAreaView style = { HomeStyle.foobar }/>
+                {/* <TouchableOpacity onPress = { pageAllUsers } style = { HomeStyle.foo } >
                     <Icon name = "account-group" size = { 25 } color = "#FFF" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                {/* <SafeAreaView style = { HomeStyle.foobar }/> */}
                 <TouchableOpacity style = { HomeStyle.foo } onPress = { () => logOut() } >
                     <Icon name = "logout" size = { 25 } color = "#FFF" />
                 </TouchableOpacity>
@@ -138,28 +141,45 @@ const HomeStyle = StyleSheet.create({
     },
     foo: {
         flexDirection: 'row',
-        width: 50,
-        height: 50,
+        width: 45,
+        height: 45,
         backgroundColor: '#2838C9',
         borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center'
     },
     bar: {
-        elevation: 22,
+        elevation: 14,
         position: 'absolute',
-        top: height*.19,
-        left: width*.1,
+        top: height*.165,
+        left: width*.145,
         justifyContent: 'space-evenly',
-        width: width*.8,
+        width: width*.7,
         alignItems: 'center',
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: '#FFF',
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius: 50,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 7,
+        },
+        shadowOpacity: 0.41,
+        shadowRadius: 9.11,
+        paddingVertical: 15,
     },
     textButtonOptions: {
         fontFamily: 'OverlockSC-Regular',
         fontSize: 18,
         color: '#FFF',
         marginLeft: 5,
+    },
+    foobar: {
+        width: 2,
+        height: 25,
+        backgroundColor: '#999',
+        borderRadius: 30
     }
 })
