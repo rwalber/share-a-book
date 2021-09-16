@@ -13,10 +13,10 @@ router.put(
         let arrayBooks: any[] = [];
         User.findById(request.params.idUser, (error: any, user: any) => {
             arrayBooks = user.borrowedBooks;
-        });
-        arrayBooks.push(request.params.idBook);
-        User.findByIdAndUpdate(request.params.idUser, {borrowedBooks: arrayBooks}, null, (error: any, userDetail: any) => {
-            response.status(201).send({message: 'Success update.'});
+            arrayBooks.push(request.params.idBook);
+            User.findByIdAndUpdate(request.params.idUser, {borrowedBooks: arrayBooks}, null, (error: any, userDetail: any) => {
+                response.status(201).send({message: 'Success update.'});
+            });
         });
     }
 )

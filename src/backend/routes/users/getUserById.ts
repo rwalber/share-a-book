@@ -7,7 +7,16 @@ router.get(
     '/user/:id',
     (request: Request, response: Response) => {
         User.findById(request.params.id, (error: any, userDetail: any) => {
-            response.status(201).send(userDetail);
+            let sendDataUser = {
+                id: userDetail.id,
+                name: userDetail.name,
+                college: userDetail.college,
+                educationCenter: userDetail.educationCenter,
+                course: userDetail.course,
+                profileThumbnail: userDetail.profileThumbnail,
+                borrowedBooks: userDetail.borrowedBooks
+            }
+            response.status(201).send(sendDataUser);
         });
     }
 )

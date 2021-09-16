@@ -1,7 +1,7 @@
 import React, { useContext, useState, useLayoutEffect } from 'react';
 import userContext from '../contexts/User';
 
-import API from '../services/API';
+import {API} from '../services/API';
 
 import {
     Text,
@@ -22,6 +22,10 @@ const BookDetail = (props: any) => {
 
     const context = useContext(userContext);
 
+    const { setState: setGloalState } = useContext(userContext);
+
+    const [ iBorrowed, setIBorrowed ] = useState(false);
+
     const [ detail, setDetail ] = useState({
         title: '',
         subtitle: '',
@@ -30,12 +34,17 @@ const BookDetail = (props: any) => {
         description: '',
         thumbnail: '',
         status: '',
-        id: ''
+        id: '',
     });
 
     useLayoutEffect(() => {
         bookDetail(props.route.params.id);
+        verifyUserBook();
     }, []);
+
+    const verifyUserBook = () => {
+        context.state.borrowedBooks.some(id => id === props.route.params.id) ? setIBorrowed(true) : setIBorrowed(false)
+    }
 
     const bookDetail = async (id: string) => {
         await API.get(`/book/${id}`)
@@ -73,11 +82,30 @@ const BookDetail = (props: any) => {
         )
     }
 
+    const updateUser = async () => {
+        await API.get(`/user/${context.state.id}`)
+        .then(function (response: any) {
+            if(response.status === 201) {
+                let updateUser = {
+                    id: response.data.id,
+                    name: response.data.name,
+                    college: response.data.college,
+                    educationCenter: response.data.educationCenter,
+                    course: response.data.course,
+                    profileThumbnail: response.data.profileThumbnail,
+                    borrowedBooks: response.data.borrowedBooks
+                }
+                setGloalState(updateUser)
+            }
+        })
+    }
+
     const confirmReserve = async () => {
         await API.put(`/book/lend/${context.state.id}/${detail.id}`)
         .then(function (response: any) {
             if(response.status === 201) {
                 bookDetail(detail.id);
+                updateUser();
             }
         })
         .catch(function (error) {
@@ -196,13 +224,21 @@ const BookDetail = (props: any) => {
                     </TouchableOpacity> : <></>
                 }
                 {
-                    detail.status === 'false' ? 
+                    detail.status === 'false' && iBorrowed === true ? 
                     <TouchableOpacity 
                         style = { [DetailStyle.buttonReserve, buttonGiveBack.background] } 
                         onPress ={ giveBack }
                     >
                         <Text style = { DetailStyle.textButton }>Estou Devolvendo</Text>
-                    </TouchableOpacity> : <></>
+                    </TouchableOpacity> 
+                        :
+                    <TouchableOpacity 
+                        style = { [DetailStyle.buttonReserve, buttonDisabled(detail.status).foo] } 
+                        disabled = { detail.status !== 'true' }
+                        onPress ={ reserve }
+                    >
+                        <Text style = { DetailStyle.textButton }>Pegar Emprestado</Text>
+                    </TouchableOpacity>
                 }
             </SafeAreaView>
         </SafeAreaView>

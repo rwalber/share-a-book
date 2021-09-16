@@ -1,45 +1,32 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { API } from '../services/API';
+import React, { useState, useEffect, useContext } from 'react'
+import { API } from '../services/API'
 
-import {
-    View,
-    Alert,
-    Image,
-    Dimensions,
-    StyleSheet,
-    ScrollView,
-    BackHandler,
+import {  
     SafeAreaView,
+    StyleSheet,
+    Alert,
+    ScrollView,
     TouchableOpacity,
     ActivityIndicator,
-} from 'react-native';
+    Dimensions,
+    Image,
+    View
+} from 'react-native'
+
+import userContext from '../contexts/User';
 import TextComponent from './TextComponent';
 
-const BookList = (props: any) => {
+const MyBookLends = (props: any) => {
 
-    const [ books, setBooks ] = useState([]);
+    const context = useContext(userContext);
+    const [ bookLends, setBookLends ] = useState([]);
     const [ load, setLoad ] = useState(false);
 
-    const BookDetail = (id: string) => {
-        props.navigation.navigate("BookDetail", {id: id});
-    };
-
-    useLayoutEffect(() => {
-        getBooksList();
-        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
-    }, []);
-
-    function handleBackButtonClick() {
-        getBooksList();
-        props.navigation.goBack(null);
-        return true;
-    }
-
-    const getBooksList = async () => {
-        await API.get('/books')
+    useEffect(() => {
+        API.get(`user/${context.state.id}/lendBooks`)
         .then(function (response: any) {
             if(response.status === 201) {
-                setBooks(response.data);
+                setBookLends(response.data);
                 setLoad(true);
             }
         })
@@ -54,18 +41,22 @@ const BookList = (props: any) => {
                 ]
             )
         });
-    }
+    }, []);
+
+    const BookDetail = (id: string) => {
+        props.navigation.navigate("BookDetail", {id: id});
+    };
 
     const bookList = () => {
         if(load) {
             return(
                 <SafeAreaView>
                     <View style = { BookListStyle.titleMargin }>
-                        <TextComponent text="Livros disponíveis" size="18" />
+                        <TextComponent text="Meus livros" size="18" />
                     </View>
                     <ScrollView contentContainerStyle = { BookListStyle.foo } >
                         {
-                            books.map((book: any) => {
+                            bookLends.map((book: any) => {
                                 return(
                                     <TouchableOpacity onPress = { () => BookDetail(book.id) } key = { book.id } >
                                         <Image 
@@ -97,7 +88,7 @@ const BookList = (props: any) => {
     )
 }
 
-export default BookList;
+export default MyBookLends;
 
 let height = Dimensions.get('window').height;
 let width = Dimensions.get('window').width;
@@ -136,6 +127,6 @@ const BookListStyle = StyleSheet.create({
     },
     titleMargin: {
         marginHorizontal: 10,
-        marginVertical: 10,
+        marginVertical: 10
     }
 })

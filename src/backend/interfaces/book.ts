@@ -7,7 +7,8 @@ interface BookAttributes {
     year: number,
     thumbnail: string,
     description: string,
-    status: boolean
+    status: boolean,
+    id?: string
 }
 
 interface BookDocument extends mongoose.Document {

@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import RNFS from 'react-native-fs';
+import axios from 'axios';
+import Geolocation from 'react-native-geolocation-service';
 import TextComponent from '../components/TextComponent';
 import { TextInputMask } from 'react-native-masked-text';
 import { useValidation } from 'react-native-form-validator';
-import RNFS from 'react-native-fs';
+import React, { useState, useEffect } from 'react';
 
 import {
     Text,
+    Alert,
     Image,
     TextInput,
     Dimensions,
     StyleSheet,
-    ScrollView,
     SafeAreaView,
     TouchableOpacity,
     ActivityIndicator,
@@ -23,7 +25,7 @@ import Logo2 from '../assets/image/Logo2.png';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import API from '../services/API';
+import { API } from '../services/API';
 
 const SignUp = (props: any) => {
     
@@ -41,6 +43,12 @@ const SignUp = (props: any) => {
     const [ educationCenter, setEducationCenter ] = useState('');
     const [ course, setCourse ]  = useState('');
     const [ profileThumbnail, setProfileThumbnail ] = useState(null);
+
+    const [ hasLocationPermission, setHasLocationPermission ] = useState(false);
+    const [ userPosition, setUserPosition ] = useState({
+        latitude: '',
+        longitude: '',
+    });
 
     const { validate, isFormValid } = useValidation({
         state: { 
@@ -68,8 +76,31 @@ const SignUp = (props: any) => {
     const [ statusRegister, setStatusRegister ] = useState(false);
 
     useEffect(() => {
-        requestCameraPermission();
+        requestCameraPermission().then(() => verifyLocationPermission());
     }, []);
+
+    const verifyLocationPermission = async () => {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+            {
+              title: "Permissão para o uso da câmera",
+              message:"Este aplicativo necessita de acesso a câmera",
+              buttonNegative: "Cancelar",
+              buttonPositive: "Aceitar"
+            }
+          )
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    setHasLocationPermission(true);
+                  } else {
+                    console.error('permissão negada');
+                    setHasLocationPermission(false);
+                  }
+        } catch (err) {
+            console.log(err)
+          console.warn(err);
+        }
+    }
 
     const requestCameraPermission = async () => {
         try {
@@ -85,6 +116,35 @@ const SignUp = (props: any) => {
         } catch (err) {
           console.warn(err);
         }
+    }
+
+    const getAdressByLocation = () => {
+        Geolocation.getCurrentPosition(
+            (position: any) => {
+                setUserPosition({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                });
+                axios.get(`http://www.mapquestapi.com/geocoding/v1/reverse?key=tvnDVvOo9dDeshUVfrIxP3VYRCjy948o&location=${position.coords.latitude},${position.coords.longitude}`).then((res: any) => {
+                    let locationResponse = res.data.results[0].locations[0];
+                    locationResponse.street ? setAddress(locationResponse.street) : '';
+                    locationResponse.adminArea5 ? setCity(locationResponse.adminArea5) : '';
+                    locationResponse.postalCode ? setCEP(locationResponse.postalCode) : '';
+                    locationResponse.adminArea3 ? setState(locationResponse.adminArea3) : '';
+                })
+            },
+            error => {
+                Alert.alert(
+                    "Algo deu errado",
+                    "Ouve um erro ao consultar a localização, tente novamente",
+                    [
+                        {
+                            text: "Fechar"
+                        }
+                    ]
+                )
+            }
+        );
     }
 
     const launchCamera = () => {
@@ -190,6 +250,7 @@ const SignUp = (props: any) => {
                     <TextInput
                         style = { SignUpStyle.textInput }
                         placeholder = "Nome completo"
+                        placeholderTextColor="#CCC3C3"
                         onChangeText = { setName }
                         value = { name }
                     />
@@ -203,15 +264,39 @@ const SignUp = (props: any) => {
                             dddMask: '(99) '
                         }}
                         placeholder = "(99) 99999-9999"
+                        placeholderTextColor="#CCC3C3"
                         value={ phone }
                         onChangeText={ setPhone }
                     />
+                    <SafeAreaView style = { SignUpStyle.row }>
+                        <SafeAreaView style = { SignUpStyle.bigInput }>
+                            <TextComponent text="CEP *" size="16" />
+                            <TextInput
+                                style = { SignUpStyle.textInput }
+                                placeholder = "Ex.: 44380-000"
+                                placeholderTextColor="#CCC3C3"
+                                onChangeText = { setCEP }
+                                value = { CEP }
+                            />
+                        </SafeAreaView>
+                        <SafeAreaView style = { SignUpStyle.smallInput }>
+                            <TouchableOpacity style = { [SignUpStyle.row, SignUpStyle.geoLocation, SignUpStyle.foobar] } onPress = { getAdressByLocation }>
+                                <Icon name = "map-marker" size = { 36 } color = "#2838C9" />
+                                <SafeAreaView style = { SignUpStyle.contentTextLocation }>
+                                    <Text style = { SignUpStyle.textLocation }>Localização</Text>
+                                    <Text style = { SignUpStyle.textLocation }>Atual</Text>
+                                </SafeAreaView>
+                            </TouchableOpacity>
+                        </SafeAreaView>
+                    </SafeAreaView>
+                    
                     <SafeAreaView style = { SignUpStyle.row }>
                         <SafeAreaView style = { SignUpStyle.bigInput }>
                             <TextComponent text="Endereço *" size="16" />
                             <TextInput
                                 style = { SignUpStyle.textInput }
                                 placeholder = "Ex.: Rua da biblioteca"
+                                placeholderTextColor="#CCC3C3"
                                 onChangeText = { setAddress }
                                 value = { address }
                             />
@@ -221,24 +306,20 @@ const SignUp = (props: any) => {
                             <TextInput
                                 style = { SignUpStyle.textInput }
                                 placeholder = "Ex.: 123"
+                                placeholderTextColor="#CCC3C3"
                                 onChangeText = { setAddressNumber }
                                 value = { addressNumber }
                             />
                         </SafeAreaView>
                     </SafeAreaView>
-                    <TextComponent text="CEP *" size="16" />
-                    <TextInput
-                        style = { SignUpStyle.textInput }
-                        placeholder = "Ex.: 44380-000"
-                        onChangeText = { setCEP }
-                        value = { CEP }
-                    />
+                    
                     <SafeAreaView style = { SignUpStyle.row }>
                         <SafeAreaView style = { SignUpStyle.bigInput }>
                         <TextComponent text="Cidade *" size="16" />
                             <TextInput
                                 style = { SignUpStyle.textInput }
                                 placeholder = "Ex.: Cruz das Almas"
+                                placeholderTextColor="#CCC3C3"
                                 onChangeText = { setCity }
                                 value = { city }
                             />
@@ -247,7 +328,8 @@ const SignUp = (props: any) => {
                             <TextComponent text="Estado *" size="16" />
                             <TextInput
                                 style = { SignUpStyle.textInput }
-                                placeholder = "Ex.: BA"
+                                placeholder = "Ex.: Bahia"
+                                placeholderTextColor="#CCC3C3"
                                 onChangeText = { setState }
                                 value = { state }
                             />
@@ -269,6 +351,7 @@ const SignUp = (props: any) => {
                     <TextInput
                         style = { SignUpStyle.textInput }
                         placeholder = "Ex.: UFRB"
+                        placeholderTextColor="#CCC3C3"
                         onChangeText = { setCollege }
                         value = { college }
                     />
@@ -276,6 +359,7 @@ const SignUp = (props: any) => {
                     <TextInput
                         style = { SignUpStyle.textInput }
                         placeholder = "Ex.: CETEC"
+                        placeholderTextColor="#CCC3C3"
                         onChangeText = { setEducationCenter }
                         value = { educationCenter }
                     />
@@ -283,6 +367,7 @@ const SignUp = (props: any) => {
                     <TextInput
                         style = { SignUpStyle.textInput }
                         placeholder = "Ex.: Engenharia da Computação"
+                        placeholderTextColor="#CCC3C3"
                         onChangeText = { setCourse }
                         value = { course }
                     />
@@ -291,6 +376,7 @@ const SignUp = (props: any) => {
                     <TextInput
                         style = { SignUpStyle.textInput }
                         placeholder = "Seu melhor e-mail"
+                        placeholderTextColor="#CCC3C3"
                         onChangeText = { setEmail }
                         value = { email }
                     />
@@ -298,6 +384,7 @@ const SignUp = (props: any) => {
                     <TextInput
                         style = { SignUpStyle.textInput }
                         placeholder = "Escolha uma senha"
+                        placeholderTextColor="#CCC3C3"
                         onChangeText = { setPassword }
                         value = { password }
                         secureTextEntry = { true }
@@ -346,21 +433,13 @@ const SignUp = (props: any) => {
     }
 
     const sucessPage = () => {
-        if(pageSucess && !statusRegister) {
+        if(pageSucess) {
             return(
                 <SafeAreaView style = { [SignUpStyle.fitContent, SignUpStyle.load] }>
                     <TextComponent text="Cadastro realizado com sucesso!" size="22" />
                     <TouchableOpacity style = { [SignUpStyle.button, SignUpStyle.registerButton] } onPress = { signIn }>
                         <Text style = { SignUpStyle.textButton }>Entrar</Text>
                     </TouchableOpacity>
-                </SafeAreaView>
-            )
-        } else if (pageSucess && !statusRegister) {
-            return(
-                <SafeAreaView style = { SignUpStyle.fitContent }>
-                    <ActivityIndicator size="large" style = { SignUpStyle.load } />
-                    <TextComponent text="Estamos realizando seu cadastro." size="22" />
-                    <TextComponent text="Por favor, aguarde!" size="22" />
                 </SafeAreaView>
             )
         }
@@ -447,7 +526,7 @@ const SignUpStyle = StyleSheet.create({
     },
     column: {
         flexDirection: 'column',
-        marginRight: 15
+        marginRight: 15,
     },
     justifyContent: {
         justifyContent: 'space-around',
@@ -464,7 +543,8 @@ const SignUpStyle = StyleSheet.create({
     },
     smallInput: {
         width: '30%',
-        paddingLeft: 5
+        paddingLeft: 5,
+        justifyContent: 'center'
     },
     textInput: {
         borderWidth: 0.8,
@@ -473,7 +553,8 @@ const SignUpStyle = StyleSheet.create({
         width: '100%',
         marginVertical: 10,
         padding: 10,
-        fontFamily: 'OverlockSC-Regular'
+        fontFamily: 'Roboto-Regular',
+        color: '#000',
     },
     button: {
         width: width * .35,
@@ -544,5 +625,23 @@ const SignUpStyle = StyleSheet.create({
     load: {
         marginTop: width * .2,
         marginBottom: width * .05
+    },
+    geoLocation: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    foobar: {
+        width: '100%',
+    },
+    contentTextLocation: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap'
+    },
+    textLocation: {
+        fontFamily: 'OverlockSC-Regular',
+        fontSize: 12,
+        color: '#2838C9',
     }
 })

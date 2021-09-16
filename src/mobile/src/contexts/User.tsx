@@ -6,7 +6,8 @@ type User = {
     college: string,
     educationCenter: string,
     course: string,
-    profileThumbnail: string
+    profileThumbnail: string,
+    borrowedBooks: Array<any>
 }
 
 type UserContext = {
@@ -21,7 +22,8 @@ const DATA_INITIAL = {
         college: '',
         educationCenter: '',
         course: '',
-        profileThumbnail: ''
+        profileThumbnail: '',
+        borrowedBooks: []
     },
     setState: () => {}
 };
